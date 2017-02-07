@@ -6,7 +6,7 @@ var windowSize = segmentSize * 2;
 var pressed = "not-pressed";
 var clicked = "not-clicked";
 
-function evaluateDataPointsModel(timeStamp) {
+function evaluateDataPointsModel(timestamp) {
   if (sensorReadingsList.length < 4) {
     return;
   }
@@ -15,7 +15,7 @@ function evaluateDataPointsModel(timeStamp) {
 
   var firstIndex = 0;
   for (var i = 0; i < sensorTimesList.length; i++) {
-    if (timeStamp - sensorTimesList[i] < segmentSize) {
+    if (timestamp - sensorTimesList[i] < segmentSize) {
       firstIndex = i;
       break;
     }
@@ -32,7 +32,7 @@ function evaluateDataPointsModel(timeStamp) {
   var max2 = Math.max.apply(null, range2);
 
   if (min1 < 30 && max2 > 130) {
-    lastFire = timeStamp;
+    lastFire = timestamp;
     pressed = "pressed";
   }
 }
@@ -48,16 +48,16 @@ function computeOffsets (firstIndex, baseLine) {
   return offsets;
 };
 
-function evaluateReadingTimes (timeStamp) {
-  while (sensorTimesList[0] < timeStamp - windowSize) {
+function evaluateReadingTimes (timestamp) {
+  while (sensorTimesList[0] < timestamp - windowSize) {
     sensorTimesList.shift();
     sensorReadingsList.shift();
   }
 
-  if (timeStamp - lastFire < segmentSize) {
+  if (timestamp - lastFire < segmentSize) {
     return;
   }
-  evaluateDataPointsModel(timeStamp);
+  evaluateDataPointsModel(timestamp);
 };
 
 AFRAME.registerComponent('move-on-click', {
@@ -81,11 +81,11 @@ AFRAME.registerComponent('move-on-click', {
     if (this.intersection == "false") {
       return;
     }
-      var data = [this.magn.reading.x, this.magn.reading.y, this.magn.reading.z];
+      var data = [this.magn.x, this.magn.y, this.magn.z];
       sensorReadingsList.push(data);
-      var timeStamp = this.magn.reading.timeStamp;
-      sensorTimesList.push(timeStamp);
-      evaluateReadingTimes(timeStamp);
+      var timestamp = this.magn.timestamp;
+      sensorTimesList.push(timestamp);
+      evaluateReadingTimes(timestamp);
     }.bind(this);
 
     this.magn.start();
