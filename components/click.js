@@ -77,7 +77,7 @@ AFRAME.registerComponent('move-on-click', {
 
     this.magn = new Magnetometer({frequency: 40});
     var prev_val = 0;
-    this.magn.onchange = function () {
+    this.magn.onreading = function () {
     if (this.intersection == "false") {
       return;
     }
